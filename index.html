@@ -111,7 +111,7 @@
             font-size: 15px;
             font-weight: 500;
             color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 8px;
+            margin-bottom: 12px;
             letter-spacing: -0.01em;
         }
 
@@ -147,18 +147,42 @@
             transform: translateY(-1px);
         }
 
+        /* FIXED OTP INPUTS */
         .otp-inputs {
             display: none;
+            flex-direction: row;
             gap: 12px;
             margin-bottom: 24px;
+            padding: 16px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .otp-inputs.show {
+            display: flex !important;
         }
 
         .otp-inputs input {
             flex: 1;
             font-size: 24px;
+            font-weight: 600;
             text-align: center;
-            padding: 16px 8px;
+            padding: 16px 12px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            color: white;
             letter-spacing: 0;
+            transition: all 0.3s ease;
+        }
+
+        .otp-inputs input:focus {
+            background: rgba(255, 255, 255, 0.35);
+            border-color: rgba(255, 255, 255, 0.6);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.2);
+            transform: scale(1.05);
         }
 
         .btn {
@@ -275,9 +299,12 @@
                 padding: 36px 24px;
                 margin: 16px;
             }
-            
             .title {
                 font-size: 24px;
+            }
+            .otp-inputs {
+                gap: 8px;
+                padding: 12px;
             }
         }
     </style>
@@ -310,7 +337,7 @@
         <!-- OTP Form -->
         <form id="otpForm" style="display: none;">
             <div class="form-group">
-                <label>Enter OTP (sent to your email)</label>
+                <label>Enter OTP sent to <span id="emailDisplay" style="font-weight: 500;"></span></label>
                 <div class="otp-inputs" id="otpInputs">
                     <input type="text" maxlength="1" autocomplete="one-time-code">
                     <input type="text" maxlength="1" autocomplete="one-time-code">
@@ -341,8 +368,8 @@
     </div>
 
     <script>
-        // Replace with your EmailJS credentials
-        emailjs.init("-0YJ2zFBFK5sdLMho"); // Get from EmailJS dashboard
+        // Your EmailJS credentials (kept as-is)
+        emailjs.init("-0YJ2zFBFK5sdLMho");
 
         let currentStudentId = '';
         let currentOtp = '';
@@ -352,10 +379,13 @@
         const studentForm = document.getElementById('studentForm');
         const otpForm = document.getElementById('otpForm');
         const balanceSection = document.getElementById('balanceSection');
+        const otpInputsContainer = document.getElementById('otpInputs');
         const otpInputs = document.querySelectorAll('#otpInputs input');
         const sendOtpBtn = document.getElementById('sendOtpBtn');
         const verifyBtn = document.getElementById('verifyBtn');
         const resendOtp = document.getElementById('resendOtp');
+        const emailDisplay = document.getElementById('emailDisplay');
+        const studentError = document.getElementById('studentError');
 
         // Auto-focus next OTP input
         otpInputs.forEach((input, index) => {
@@ -370,6 +400,18 @@
                     otpInputs[index - 1].focus();
                 }
             });
+            input.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const paste = (e.clipboardData || window.clipboardData).getData('text');
+                if (paste.length === 6) {
+                    otpInputs.forEach((input, idx) => {
+                        if (idx < 6 && paste[idx]) {
+                            input.value = paste[idx];
+                        }
+                    });
+                    updateOtp();
+                }
+            });
         });
 
         studentForm.addEventListener('submit', async (e) => {
@@ -382,14 +424,17 @@
             }
 
             currentStudentId = studentId;
-            showLoading(sendOtpBtn, 'Sending OTP...');
+            const email = `${studentId}@student.isf.edu.hk`;
+            emailDisplay.textContent = email;
             
+            showLoading(sendOtpBtn, 'Sending OTP...');
             const success = await sendOtpEmail(studentId);
             
             if (success) {
                 hideLoading(sendOtpBtn, 'Send OTP');
                 studentForm.style.display = 'none';
                 otpForm.style.display = 'block';
+                otpInputsContainer.classList.add('show');
                 otpInputs[0].focus();
                 startCountdown();
             } else {
@@ -436,9 +481,7 @@
 
         async function sendOtpEmail(studentId) {
             try {
-                // Generate 6-digit OTP
                 currentOtp = Math.floor(100000 + Math.random() * 900000).toString();
-                
                 const email = `${studentId}@student.isf.edu.hk`;
                 const templateParams = {
                     to_email: email,

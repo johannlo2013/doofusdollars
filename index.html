@@ -312,32 +312,32 @@
 <body>
     <div class="container">
         <h1 class="title">doofus dollars</h1>
-        <p class="subtitle">enter your student ID to view your doofus dollars</p>
+        <p class="subtitle">Enter your student ID to view your cash balance</p>
         
         <!-- Student ID Form -->
         <form id="studentForm">
             <div class="form-group">
-                <label for="studentId">student ID</label>
+                <label for="studentId">Student ID</label>
                 <div class="input-wrapper">
                     <input 
                         type="text" 
                         id="studentId" 
-                        placeholder="e.g. 20240001"
+                        placeholder="e.g. 00000000"
                         maxlength="20"
                         required
                     >
                 </div>
-                <div class="error" id="studentError">please enter a valid student ID</div>
+                <div class="error" id="studentError">Please enter a valid student ID</div>
             </div>
             <button type="submit" class="btn" id="sendOtpBtn">
-                send OTP
+                Send OTP
             </button>
         </form>
 
         <!-- OTP Form -->
         <form id="otpForm" style="display: none;">
             <div class="form-group">
-                <label>enter OTP sent to <span id="emailDisplay" style="font-weight: 500;"></span></label>
+                <label>Enter OTP sent to <span id="emailDisplay" style="font-weight: 500;"></span></label>
                 <div class="otp-inputs" id="otpInputs">
                     <input type="text" maxlength="1" autocomplete="one-time-code">
                     <input type="text" maxlength="1" autocomplete="one-time-code">
@@ -346,12 +346,12 @@
                     <input type="text" maxlength="1" autocomplete="one-time-code">
                     <input type="text" maxlength="1" autocomplete="one-time-code">
                 </div>
-                <div class="error" id="otpError">invalid OTP. please try again.</div>
+                <div class="error" id="otpError">Invalid OTP. Please try again.</div>
                 <div class="success" id="otpSuccess">OTP verified successfully!</div>
             </div>
-            <button type="submit" class="btn" id="verifyBtn">verify & view balance</button>
+            <button type="submit" class="btn" id="verifyBtn">Verify & View Balance</button>
             <div class="resend">
-                <a href="#" id="resendOtp">didn't receive OTP? resend</a>
+                <a href="#" id="resendOtp">Didn't receive OTP? Resend</a>
             </div>
         </form>
 
@@ -359,10 +359,10 @@
         <div class="balance-section" id="balanceSection">
             <div class="balance-amount" id="balanceAmount">$0.00</div>
             <p style="color: rgba(255, 255, 255, 0.8); font-size: 16px;">
-                available doofus credits
+                Available Doofus Credits
             </p>
             <div style="margin-top: 24px;">
-                <button class="btn" onclick="location.reload()">check again (reload)</button>
+                <button class="btn" onclick="location.reload()">Check Again</button>
             </div>
         </div>
     </div>
@@ -419,7 +419,7 @@
             const studentId = document.getElementById('studentId').value.trim();
             
             if (!studentId) {
-                showError('studentError', 'please enter your student ID');
+                showError('studentError', 'Please enter your student ID');
                 return;
             }
 
@@ -427,11 +427,11 @@
             const email = `${studentId}@student.isf.edu.hk`;
             emailDisplay.textContent = email;
             
-            showLoading(sendOtpBtn, 'sending OTP...');
+            showLoading(sendOtpBtn, 'Sending OTP...');
             const success = await sendOtpEmail(studentId);
             
             if (success) {
-                hideLoading(sendOtpBtn, 'send OTP');
+                hideLoading(sendOtpBtn, 'Send OTP');
                 studentForm.style.display = 'none';
                 otpForm.style.display = 'block';
                 otpInputsContainer.classList.add('show');
@@ -439,7 +439,7 @@
                 startCountdown();
             } else {
                 hideLoading(sendOtpBtn, 'Send OTP');
-                showError('studentError', 'failed to send OTP. Please try again.');
+                showError('studentError', 'Failed to send OTP. Please try again.');
             }
         });
 
@@ -448,7 +448,7 @@
             const otp = Array.from(otpInputs).map(input => input.value).join('');
             
             if (otp.length !== 6) {
-                showError('otpError', 'please enter full 6-digit OTP');
+                showError('otpError', 'Please enter full 6-digit OTP');
                 return;
             }
 
@@ -456,7 +456,7 @@
                 showSuccess('otpSuccess');
                 setTimeout(fetchBalance, 1000);
             } else {
-                showError('otpError', 'invalid OTP. Please try again.');
+                showError('otpError', 'Invalid OTP. Please try again.');
                 otpInputs.forEach(input => input.value = '');
                 otpInputs[0].focus();
             }
@@ -464,18 +464,18 @@
 
         resendOtp.addEventListener('click', async (e) => {
             e.preventDefault();
-            showLoading(sendOtpBtn, 'resending...');
+            showLoading(sendOtpBtn, 'Resending...');
             
             const success = await sendOtpEmail(currentStudentId);
             
             if (success) {
-                hideLoading(sendOtpBtn, 'send OTP');
+                hideLoading(sendOtpBtn, 'Send OTP');
                 startCountdown();
                 otpInputs.forEach(input => input.value = '');
                 otpInputs[0].focus();
             } else {
-                hideLoading(sendOtpBtn, 'send OTP');
-                showError('otpError', 'failed to resend OTP. please try again.');
+                hideLoading(sendOtpBtn, 'Send OTP');
+                showError('otpError', 'Failed to resend OTP. Please try again.');
             }
         });
 
@@ -487,7 +487,7 @@
                     to_email: email,
                     student_id: studentId,
                     otp: currentOtp,
-                    message: `your OTP for doofus credits is: ${currentOtp}. valid for 60 seconds.`
+                    message: `your OTP for doofus dollars is: ${currentOtp}. valid for 60 seconds.`
                 };
 
                 const result = await emailjs.send('service_6fnrgvu', 'template_xbioicc', templateParams);
@@ -506,7 +506,7 @@
                 document.getElementById('balanceAmount').textContent = `$${parseFloat(data.balance || 0).toFixed(2)}`;
             } catch (error) {
                 document.getElementById('balanceAmount').textContent = '$0.00';
-                console.error('balance fetch error:', error);
+                console.error('Balance fetch error:', error);
             }
             
             otpForm.style.display = 'none';
@@ -525,8 +525,8 @@
             const timer = setInterval(() => {
                 countdown--;
                 resendOtp.textContent = countdown > 0 
-                    ? `resend in ${countdown}s`
-                    : "didn't receive OTP? Resend";
+                    ? `Resend in ${countdown}s`
+                    : "Didn't receive OTP? Resend";
                 
                 if (countdown <= 0) {
                     clearInterval(timer);

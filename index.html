@@ -342,7 +342,7 @@
 
     <script>
         // Replace with your EmailJS credentials
-        emailjs.init("YOUR_PUBLIC_KEY"); // Get from EmailJS dashboard
+        emailjs.init("-0YJ2zFBFK5sdLMho"); // Get from EmailJS dashboard
 
         let currentStudentId = '';
         let currentOtp = '';
@@ -447,7 +447,7 @@
                     message: `Your OTP for Student Balance is: ${currentOtp}. Valid for 60 seconds.`
                 };
 
-                const result = await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams);
+                const result = await emailjs.send('service_6fnrgvu', 'template_xbioicc', templateParams);
                 console.log('EmailJS success:', result.status, result.text);
                 return true;
             } catch (error) {

@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Balance Check</title>
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+  <style>
+    :root {
+      --glass-bg: rgba(255, 255, 255, 0.1);
+      --glass-border: rgba(255, 255, 255, 0.2);
+      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+      --glass-backdrop: blur(20px);
+      --accent-glow: rgba(59, 130, 246, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      background-attachment: fixed;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                  radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
+                  radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
+      z-index: -1;
+      animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+      0%, 100% { transform: scale(1) rotate(0deg); }
+      50% { transform: scale(1.05) rotate(180deg); }
+    }
+
+    .container {
+      max-width: 400px;
+      width: 100%;
+      backdrop-filter: var(--glass-backdrop);
+      background: var(--glass-bg);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 40px 32px;
+      box-shadow: 
+        var(--glass-shadow),
+        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .container::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+    }
+
+    .title {
+      text-align: center;
+      font-size: 28px;
+      font-weight: 600;
+      background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.8));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 32px;
+      letter-spacing: -0.02em;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 24px;
+    }
+
+    .input-field {
+      width: 100%;
+      padding: 16px 20px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 16px;
+      color: white;
+      font-size: 16px;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      outline: none;
+    }
+
+    .input-field:focus {
+      border-color: var(--accent-glow);
+      box-shadow: 0 0 0 4px var(--accent-glow), var(--glass-shadow);
+      transform: translateY(-2px);
+    }
+
+    .input-field::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    .send-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
+      border: 1px solid var(--accent-glow);
+      border-radius: 16px;
+      color: white;
+      font-size: 16px;
+      font-weight: 500;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .send-btn:hover {
+      background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.2));
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+      transform: translateY(-2px);
+    }
+
+    .send-btn:active {
+      transform: translateY(0);
+    }
+
+    .send-btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .result {
+      margin-top: 24px;
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+      font-weight: 500;
+      backdrop-filter: blur(10px);
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.3s ease;
+    }
+
+    .result.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .result.success {
+      background: rgba(34, 197, 94, 0.2);
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      color: #22c55e;
+    }
+
+    .result.error {
+      background: rgba(239, 68, 68, 0.2);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+    }
+
+    .balance-display {
+      font-size: 24px;
+      font-weight: 700;
+      color: #10b981;
+      margin-top: 8px;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 32px 24px;
+        margin: 10px;
+      }
+      
+      .title {
+        font-size: 24px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="title">Balance Check</h1>
+    
+    <div class="input-group">
+      <input 
+        type="text" 
+        id="studentId" 
+        class="input-field"
+        placeholder="Enter your student ID (e.g., 12345678)"
+        maxlength="20"
+        required
+      >
+    </div>
+    
+    <button class="send-btn" id="sendBtn">
+      Check Balance
+    </button>
+    
+    <div id="result" class="result"></div>
+  </div>
+
+  <script>
+    // ⚠️ REPLACE THESE WITH YOUR ACTUAL EMAILJS CREDENTIALS
+    const EMAILJS_PUBLIC_KEY = 'YOUR_PUBLIC_KEY_HERE';  // From EmailJS dashboard → Account
+    const EMAILJS_SERVICE_ID = 'YOUR_SERVICE_ID';       // From EmailJS → Email Services
+    const EMAILJS_TEMPLATE_ID = 'YOUR_TEMPLATE_ID';     // From EmailJS → Email Templates
+
+    emailjs.init(EMAILJS_PUBLIC_KEY);
+
+    const studentIdInput = document.getElementById('studentId');
+    const sendBtn = document.getElementById('sendBtn');
+    const resultDiv = document.getElementById('result');
+
+    sendBtn.addEventListener('click', async () => {
+      const studentId = studentIdInput.value.trim();
+      
+      if (!studentId) {
+        showResult('Please enter a student ID', 'error');
+        return;
+      }
+
+      // Reset state
+      sendBtn.disabled = true;
+      sendBtn.textContent = 'Sending...';
+      resultDiv.classList.remove('show');
+
+      try {
+        // Step 1: Send email via EmailJS
+        const emailParams = {
+          to_email: `${studentId}@student.isf.edu.hk`,
+          student_id: studentId,
+          message: `Balance check request for student ID: ${studentId}`
+        };
+
+        const emailResponse = await emailjs.send(
+          EMAILJS_SERVICE_ID, 
+          EMAILJS_TEMPLATE_ID, 
+          emailParams
+        );
+
+        console.log('Email sent successfully!', emailResponse);
+
+        // Step 2: Fetch balance if email succeeded
+        const balanceResponse = await fetch(`https://doofusdollars.pythonanywhere.com/balance/${studentId}`);
+        
+        if (!balanceResponse.ok) {
+          throw new Error(`HTTP ${balanceResponse.status}: ${balanceResponse.statusText}`);
+        }
+
+        const balanceData = await balanceResponse.json();
+        const balance = balanceData.balance || balanceData.Balance || 'N/A';
+
+        showResult('Success! Your balance is:', 'success');
+        resultDiv.innerHTML += `<div class="balance-display">$${balance}</div>`;
+
+      } catch (error) {
+        console.error('Error:', error);
+        showResult(`Error: ${error.message}`, 'error');
+      } finally {
+        sendBtn.disabled = false;
+        sendBtn.textContent = 'Check Balance';
+      }
+    });
+
+    function showResult(message, type) {
+      resultDiv.textContent = message;
+      resultDiv.className = `result ${type} show`;
+    }
+
+    // Auto-focus input on load
+    studentIdInput.focus();
+  </script>
+</body>
+</html>

@@ -1,298 +1,487 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Student Balance Check</title>
-  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-  <style>
-    :root {
-      --glass-bg: rgba(255, 255, 255, 0.1);
-      --glass-border: rgba(255, 255, 255, 0.2);
-      --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-      --glass-backdrop: blur(20px);
-      --accent-glow: rgba(59, 130, 246, 0.5);
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      background-attachment: fixed;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-      overflow: hidden;
-      position: relative;
-    }
-
-    body::before {
-      content: '';
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
-                  radial-gradient(circle at 80% 20%, rgba(255, 119, 198, 0.3) 0%, transparent 50%),
-                  radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.3) 0%, transparent 50%);
-      z-index: -1;
-      animation: float 20s ease-in-out infinite;
-    }
-
-    @keyframes float {
-      0%, 100% { transform: scale(1) rotate(0deg); }
-      50% { transform: scale(1.05) rotate(180deg); }
-    }
-
-    .container {
-      max-width: 400px;
-      width: 100%;
-      backdrop-filter: var(--glass-backdrop);
-      background: var(--glass-bg);
-      border: 1px solid var(--glass-border);
-      border-radius: 24px;
-      padding: 40px 32px;
-      box-shadow: 
-        var(--glass-shadow),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .container::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 1px;
-      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-    }
-
-    .title {
-      text-align: center;
-      font-size: 28px;
-      font-weight: 600;
-      background: linear-gradient(135deg, #ffffff, rgba(255, 255, 255, 0.8));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin-bottom: 32px;
-      letter-spacing: -0.02em;
-    }
-
-    .input-group {
-      position: relative;
-      margin-bottom: 24px;
-    }
-
-    .input-field {
-      width: 100%;
-      padding: 16px 20px;
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 16px;
-      color: white;
-      font-size: 16px;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      outline: none;
-    }
-
-    .input-field:focus {
-      border-color: var(--accent-glow);
-      box-shadow: 0 0 0 4px var(--accent-glow), var(--glass-shadow);
-      transform: translateY(-2px);
-    }
-
-    .input-field::placeholder {
-      color: rgba(255, 255, 255, 0.5);
-    }
-
-    .send-btn {
-      width: 100%;
-      padding: 16px;
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(59, 130, 246, 0.1));
-      border: 1px solid var(--accent-glow);
-      border-radius: 16px;
-      color: white;
-      font-size: 16px;
-      font-weight: 500;
-      cursor: pointer;
-      backdrop-filter: blur(10px);
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .send-btn:hover {
-      background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(59, 130, 246, 0.2));
-      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
-      transform: translateY(-2px);
-    }
-
-    .send-btn:active {
-      transform: translateY(0);
-    }
-
-    .send-btn:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      transform: none;
-    }
-
-    .result {
-      margin-top: 24px;
-      padding: 20px;
-      border-radius: 16px;
-      text-align: center;
-      font-weight: 500;
-      backdrop-filter: blur(10px);
-      min-height: 60px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transform: translateY(10px);
-      transition: all 0.3s ease;
-    }
-
-    .result.show {
-      opacity: 1;
-      transform: translateY(0);
-    }
-
-    .result.success {
-      background: rgba(34, 197, 94, 0.2);
-      border: 1px solid rgba(34, 197, 94, 0.3);
-      color: #22c55e;
-    }
-
-    .result.error {
-      background: rgba(239, 68, 68, 0.2);
-      border: 1px solid rgba(239, 68, 68, 0.3);
-      color: #ef4444;
-    }
-
-    .balance-display {
-      font-size: 24px;
-      font-weight: 700;
-      color: #10b981;
-      margin-top: 8px;
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        padding: 32px 24px;
-        margin: 10px;
-      }
-      
-      .title {
-        font-size: 24px;
-      }
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <h1 class="title">Balance Check</h1>
-    
-    <div class="input-group">
-      <input 
-        type="text" 
-        id="studentId" 
-        class="input-field"
-        placeholder="Enter your student ID (e.g., 12345678)"
-        maxlength="20"
-        required
-      >
-    </div>
-    
-    <button class="send-btn" id="sendBtn">
-      Check Balance
-    </button>
-    
-    <div id="result" class="result"></div>
-  </div>
-
-  <script>
-    // ⚠️ REPLACE THESE WITH YOUR ACTUAL EMAILJS CREDENTIALS
-    const EMAILJS_PUBLIC_KEY = '-0YJ2zFBFK5sdLMho';  // From EmailJS dashboard → Account
-    const EMAILJS_SERVICE_ID = 'service_6fnrgvu';       // From EmailJS → Email Services
-    const EMAILJS_TEMPLATE_ID = 'template_28ah6ng';     // From EmailJS → Email Templates
-
-    emailjs.init(EMAILJS_PUBLIC_KEY);
-
-    const studentIdInput = document.getElementById('studentId');
-    const sendBtn = document.getElementById('sendBtn');
-    const resultDiv = document.getElementById('result');
-
-    sendBtn.addEventListener('click', async () => {
-      const studentId = studentIdInput.value.trim();
-      
-      if (!studentId) {
-        showResult('Please enter a student ID', 'error');
-        return;
-      }
-
-      // Reset state
-      sendBtn.disabled = true;
-      sendBtn.textContent = 'Sending...';
-      resultDiv.classList.remove('show');
-
-      try {
-        // Step 1: Send email via EmailJS
-        const emailParams = {
-          to_email: `${studentId}@student.isf.edu.hk`,
-          student_id: studentId,
-          message: `Balance check request for student ID: ${studentId}`
-        };
-
-        const emailResponse = await emailjs.send(
-          EMAILJS_SERVICE_ID, 
-          EMAILJS_TEMPLATE_ID, 
-          emailParams
-        );
-
-        console.log('Email sent successfully!', emailResponse);
-
-        // Step 2: Fetch balance if email succeeded
-        const balanceResponse = await fetch(`https://doofusdollars.pythonanywhere.com/balance/${studentId}`);
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Balance</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap');
         
-        if (!balanceResponse.ok) {
-          throw new Error(`HTTP ${balanceResponse.status}: ${balanceResponse.statusText}`);
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        const balanceData = await balanceResponse.json();
-        const balance = balanceData.balance || balanceData.Balance || 'N/A';
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
 
-        showResult('Success! Your balance is:', 'success');
-        resultDiv.innerHTML += `<div class="balance-display">$${balance}</div>`;
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(120, 119, 198, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 40%, rgba(120, 219, 255, 0.2) 0%, transparent 50%);
+            z-index: -1;
+            animation: float 20s ease-in-out infinite;
+        }
 
-      } catch (error) {
-        console.error('Error:', error);
-        showResult(`Error: ${error.message}`, 'error');
-      } finally {
-        sendBtn.disabled = false;
-        sendBtn.textContent = 'Check Balance';
-      }
-    });
+        @keyframes float {
+            0%, 100% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.05) rotate(180deg); }
+        }
 
-    function showResult(message, type) {
-      resultDiv.textContent = message;
-      resultDiv.className = `result ${type} show`;
-    }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(25px) saturate(180%);
+            -webkit-backdrop-filter: blur(25px) saturate(180%);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 24px;
+            padding: 48px 40px;
+            max-width: 420px;
+            width: 100%;
+            box-shadow: 
+                0 25px 45px rgba(0, 0, 0, 0.1),
+                0 0 0 1px rgba(255, 255, 255, 0.05),
+                inset 0 1px 0 rgba(255, 255, 255, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
 
-    // Auto-focus input on load
-    studentIdInput.focus();
-  </script>
+        .container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        }
+
+        .container::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        }
+
+        .title {
+            font-size: 28px;
+            font-weight: 600;
+            color: white;
+            text-align: center;
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 16px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+            text-align: center;
+            margin-bottom: 36px;
+            letter-spacing: -0.01em;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 24px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 15px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 8px;
+            letter-spacing: -0.01em;
+        }
+
+        .input-wrapper {
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            padding: 16px 20px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 400;
+            color: white;
+            outline: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            caret-color: rgba(255, 255, 255, 0.8);
+        }
+
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        input:focus {
+            background: rgba(255, 255, 255, 0.25);
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 
+                0 0 0 3px rgba(255, 255, 255, 0.1),
+                0 8px 25px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+
+        .otp-inputs {
+            display: none;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .otp-inputs input {
+            flex: 1;
+            font-size: 24px;
+            text-align: center;
+            padding: 16px 8px;
+            letter-spacing: 0;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 16px;
+            font-size: 17px;
+            font-weight: 500;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.2));
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 
+                0 12px 35px rgba(0, 0, 0, 0.2),
+                0 0 0 3px rgba(255, 255, 255, 0.2);
+        }
+
+        .btn:active {
+            transform: translateY(0);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .balance-section {
+            display: none;
+            text-align: center;
+            padding: 32px;
+        }
+
+        .balance-amount {
+            font-size: 48px;
+            font-weight: 600;
+            color: #10B981;
+            margin: 16px 0;
+            letter-spacing: -0.03em;
+        }
+
+        .resend {
+            text-align: center;
+            margin-top: 16px;
+        }
+
+        .resend a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            font-size: 15px;
+            transition: color 0.2s;
+        }
+
+        .resend a:hover {
+            color: white;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .error {
+            color: #F87171;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 36px 24px;
+                margin: 16px;
+            }
+            
+            .title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="title">Student Balance</h1>
+        <p class="subtitle">Enter your student ID to view your cash balance</p>
+        
+        <!-- Student ID Form -->
+        <form id="studentForm">
+            <div class="form-group">
+                <label for="studentId">Student ID</label>
+                <div class="input-wrapper">
+                    <input 
+                        type="text" 
+                        id="studentId" 
+                        placeholder="e.g. 20240001"
+                        maxlength="20"
+                        required
+                    >
+                </div>
+                <div class="error" id="studentError">Please enter a valid student ID</div>
+            </div>
+            <button type="submit" class="btn" id="sendOtpBtn">
+                Send OTP
+            </button>
+        </form>
+
+        <!-- OTP Form -->
+        <form id="otpForm" style="display: none;">
+            <div class="form-group">
+                <label>Enter OTP (sent to your email)</label>
+                <div class="otp-inputs" id="otpInputs">
+                    <input type="text" maxlength="1" autocomplete="one-time-code">
+                    <input type="text" maxlength="1" autocomplete="one-time-code">
+                    <input type="text" maxlength="1" autocomplete="one-time-code">
+                    <input type="text" maxlength="1" autocomplete="one-time-code">
+                    <input type="text" maxlength="1" autocomplete="one-time-code">
+                    <input type="text" maxlength="1" autocomplete="one-time-code">
+                </div>
+                <div class="error" id="otpError">Invalid OTP. Please try again.</div>
+            </div>
+            <button type="submit" class="btn" id="verifyBtn">Verify & View Balance</button>
+            <div class="resend">
+                <a href="#" id="resendOtp">Didn't receive OTP? Resend</a>
+            </div>
+        </form>
+
+        <!-- Balance Display -->
+        <div class="balance-section" id="balanceSection">
+            <div class="balance-amount" id="balanceAmount">$0.00</div>
+            <p style="color: rgba(255, 255, 255, 0.8); font-size: 16px;">
+                Available Cash Balance
+            </p>
+            <div style="margin-top: 24px;">
+                <button class="btn" onclick="location.reload()">Check Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentStudentId = '';
+        let otpTimeout = 60;
+        let countdown = 0;
+
+        const studentForm = document.getElementById('studentForm');
+        const otpForm = document.getElementById('otpForm');
+        const balanceSection = document.getElementById('balanceSection');
+        const otpInputs = document.querySelectorAll('#otpInputs input');
+        const sendOtpBtn = document.getElementById('sendOtpBtn');
+        const verifyBtn = document.getElementById('verifyBtn');
+        const resendOtp = document.getElementById('resendOtp');
+
+        // Auto-focus next OTP input
+        otpInputs.forEach((input, index) => {
+            input.addEventListener('input', (e) => {
+                if (e.target.value.length === 1 && index < otpInputs.length - 1) {
+                    otpInputs[index + 1].focus();
+                }
+                updateOtp();
+            });
+            input.addEventListener('keydown', (e) => {
+                if (e.key === 'Backspace' && !e.target.value && index > 0) {
+                    otpInputs[index - 1].focus();
+                }
+            });
+        });
+
+        studentForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const studentId = document.getElementById('studentId').value.trim();
+            
+            if (!studentId) {
+                showError('studentError', 'Please enter your student ID');
+                return;
+            }
+
+            currentStudentId = studentId;
+            showLoading(sendOtpBtn, 'Sending OTP...');
+            
+            // Simulate OTP send (replace with real API call)
+            await simulateApiCall('/send-otp', { studentId });
+            
+            hideLoading(sendOtpBtn, 'Send OTP');
+            studentForm.style.display = 'none';
+            otpForm.style.display = 'block';
+            otpInputs[0].focus();
+            startCountdown();
+        });
+
+        otpForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showLoading(verifyBtn, 'Verifying...');
+            
+            const otp = Array.from(otpInputs).map(input => input.value).join('');
+            
+            if (otp.length !== 6) {
+                showError('otpError', 'Please enter full 6-digit OTP');
+                hideLoading(verifyBtn, 'Verify & View Balance');
+                return;
+            }
+
+            // Simulate OTP verification (replace with real API call)
+            const verified = await simulateApiCall('/verify-otp', { 
+                studentId: currentStudentId, 
+                otp 
+            });
+
+            if (verified) {
+                await fetchBalance();
+            } else {
+                showError('otpError', 'Invalid OTP. Please try again.');
+                otpInputs.forEach(input => input.value = '');
+                otpInputs[0].focus();
+            }
+            
+            hideLoading(verifyBtn, 'Verify & View Balance');
+        });
+
+        resendOtp.addEventListener('click', async (e) => {
+            e.preventDefault();
+            showLoading(sendOtpBtn, 'Resending...');
+            
+            await simulateApiCall('/send-otp', { studentId: currentStudentId });
+            
+            hideLoading(sendOtpBtn, 'Send OTP');
+            startCountdown();
+            otpInputs.forEach(input => input.value = '');
+            otpInputs[0].focus();
+        });
+
+        async function simulateApiCall(endpoint, data) {
+            // Replace these with your actual backend endpoints
+            console.log('API Call:', endpoint, data);
+            await new Promise(resolve => setTimeout(resolve, 1500));
+            return true; // Simulate success
+        }
+
+        async function fetchBalance() {
+            try {
+                const response = await fetch(`https://doofusdollars.pythonanywhere.com/balance/${currentStudentId}`);
+                const data = await response.json();
+                document.getElementById('balanceAmount').textContent = `$${parseFloat(data.balance || 0).toFixed(2)}`;
+            } catch (error) {
+                document.getElementById('balanceAmount').textContent = '$0.00';
+                console.error('Balance fetch error:', error);
+            }
+            
+            otpForm.style.display = 'none';
+            balanceSection.style.display = 'block';
+        }
+
+        function updateOtp() {
+            const otp = Array.from(otpInputs).map(input => input.value).join('');
+            if (otp.length === 6) {
+                verifyBtn.focus();
+            }
+        }
+
+        function startCountdown() {
+            countdown = otpTimeout;
+            const timer = setInterval(() => {
+                countdown--;
+                resendOtp.textContent = countdown > 0 
+                    ? `Resend in ${countdown}s`
+                    : "Didn't receive OTP? Resend";
+                
+                if (countdown <= 0) {
+                    clearInterval(timer);
+                }
+            }, 1000);
+        }
+
+        function showLoading(btn, text) {
+            btn.disabled = true;
+            btn.innerHTML = `<span class="loading"></span>${text}`;
+        }
+
+        function hideLoading(btn, text) {
+            btn.disabled = false;
+            btn.textContent = text;
+        }
+
+        function showError(errorId, message) {
+            const errorEl = document.getElementById(errorId);
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            setTimeout(() => {
+                errorEl.style.display = 'none';
+            }, 4000);
+        }
+    </script>
 </body>
 </html>

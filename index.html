@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Balance</title>
+    <title>doofus dollars</title>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap');
@@ -311,13 +311,13 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="title">Student Balance</h1>
-        <p class="subtitle">Enter your student ID to view your cash balance</p>
+        <h1 class="title">doofus dollars</h1>
+        <p class="subtitle">enter your student ID to view your doofus dollars</p>
         
         <!-- Student ID Form -->
         <form id="studentForm">
             <div class="form-group">
-                <label for="studentId">Student ID</label>
+                <label for="studentId">student ID</label>
                 <div class="input-wrapper">
                     <input 
                         type="text" 
@@ -327,17 +327,17 @@
                         required
                     >
                 </div>
-                <div class="error" id="studentError">Please enter a valid student ID</div>
+                <div class="error" id="studentError">please enter a valid student ID</div>
             </div>
             <button type="submit" class="btn" id="sendOtpBtn">
-                Send OTP
+                send OTP
             </button>
         </form>
 
         <!-- OTP Form -->
         <form id="otpForm" style="display: none;">
             <div class="form-group">
-                <label>Enter OTP sent to <span id="emailDisplay" style="font-weight: 500;"></span></label>
+                <label>enter OTP sent to <span id="emailDisplay" style="font-weight: 500;"></span></label>
                 <div class="otp-inputs" id="otpInputs">
                     <input type="text" maxlength="1" autocomplete="one-time-code">
                     <input type="text" maxlength="1" autocomplete="one-time-code">
@@ -346,12 +346,12 @@
                     <input type="text" maxlength="1" autocomplete="one-time-code">
                     <input type="text" maxlength="1" autocomplete="one-time-code">
                 </div>
-                <div class="error" id="otpError">Invalid OTP. Please try again.</div>
+                <div class="error" id="otpError">invalid OTP. please try again.</div>
                 <div class="success" id="otpSuccess">OTP verified successfully!</div>
             </div>
-            <button type="submit" class="btn" id="verifyBtn">Verify & View Balance</button>
+            <button type="submit" class="btn" id="verifyBtn">verify & view balance</button>
             <div class="resend">
-                <a href="#" id="resendOtp">Didn't receive OTP? Resend</a>
+                <a href="#" id="resendOtp">didn't receive OTP? resend</a>
             </div>
         </form>
 
@@ -359,10 +359,10 @@
         <div class="balance-section" id="balanceSection">
             <div class="balance-amount" id="balanceAmount">$0.00</div>
             <p style="color: rgba(255, 255, 255, 0.8); font-size: 16px;">
-                Available Cash Balance
+                available doofus credits
             </p>
             <div style="margin-top: 24px;">
-                <button class="btn" onclick="location.reload()">Check Again</button>
+                <button class="btn" onclick="location.reload()">check again (reload)</button>
             </div>
         </div>
     </div>
@@ -419,7 +419,7 @@
             const studentId = document.getElementById('studentId').value.trim();
             
             if (!studentId) {
-                showError('studentError', 'Please enter your student ID');
+                showError('studentError', 'please enter your student ID');
                 return;
             }
 
@@ -427,11 +427,11 @@
             const email = `${studentId}@student.isf.edu.hk`;
             emailDisplay.textContent = email;
             
-            showLoading(sendOtpBtn, 'Sending OTP...');
+            showLoading(sendOtpBtn, 'sending OTP...');
             const success = await sendOtpEmail(studentId);
             
             if (success) {
-                hideLoading(sendOtpBtn, 'Send OTP');
+                hideLoading(sendOtpBtn, 'send OTP');
                 studentForm.style.display = 'none';
                 otpForm.style.display = 'block';
                 otpInputsContainer.classList.add('show');
@@ -439,7 +439,7 @@
                 startCountdown();
             } else {
                 hideLoading(sendOtpBtn, 'Send OTP');
-                showError('studentError', 'Failed to send OTP. Please try again.');
+                showError('studentError', 'failed to send OTP. Please try again.');
             }
         });
 
@@ -448,7 +448,7 @@
             const otp = Array.from(otpInputs).map(input => input.value).join('');
             
             if (otp.length !== 6) {
-                showError('otpError', 'Please enter full 6-digit OTP');
+                showError('otpError', 'please enter full 6-digit OTP');
                 return;
             }
 
@@ -456,7 +456,7 @@
                 showSuccess('otpSuccess');
                 setTimeout(fetchBalance, 1000);
             } else {
-                showError('otpError', 'Invalid OTP. Please try again.');
+                showError('otpError', 'invalid OTP. Please try again.');
                 otpInputs.forEach(input => input.value = '');
                 otpInputs[0].focus();
             }
@@ -464,18 +464,18 @@
 
         resendOtp.addEventListener('click', async (e) => {
             e.preventDefault();
-            showLoading(sendOtpBtn, 'Resending...');
+            showLoading(sendOtpBtn, 'resending...');
             
             const success = await sendOtpEmail(currentStudentId);
             
             if (success) {
-                hideLoading(sendOtpBtn, 'Send OTP');
+                hideLoading(sendOtpBtn, 'send OTP');
                 startCountdown();
                 otpInputs.forEach(input => input.value = '');
                 otpInputs[0].focus();
             } else {
-                hideLoading(sendOtpBtn, 'Send OTP');
-                showError('otpError', 'Failed to resend OTP. Please try again.');
+                hideLoading(sendOtpBtn, 'send OTP');
+                showError('otpError', 'failed to resend OTP. please try again.');
             }
         });
 
@@ -487,7 +487,7 @@
                     to_email: email,
                     student_id: studentId,
                     otp: currentOtp,
-                    message: `Your OTP for Student Balance is: ${currentOtp}. Valid for 60 seconds.`
+                    message: `your OTP for doofus credits is: ${currentOtp}. valid for 60 seconds.`
                 };
 
                 const result = await emailjs.send('service_6fnrgvu', 'template_xbioicc', templateParams);
@@ -506,7 +506,7 @@
                 document.getElementById('balanceAmount').textContent = `$${parseFloat(data.balance || 0).toFixed(2)}`;
             } catch (error) {
                 document.getElementById('balanceAmount').textContent = '$0.00';
-                console.error('Balance fetch error:', error);
+                console.error('balance fetch error:', error);
             }
             
             otpForm.style.display = 'none';
@@ -525,8 +525,8 @@
             const timer = setInterval(() => {
                 countdown--;
                 resendOtp.textContent = countdown > 0 
-                    ? `Resend in ${countdown}s`
-                    : "Didn't receive OTP? Resend";
+                    ? `resend in ${countdown}s`
+                    : "didn't receive OTP? Resend";
                 
                 if (countdown <= 0) {
                     clearInterval(timer);

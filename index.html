@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Student Balance</title>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap');
         
@@ -262,6 +263,13 @@
             display: none;
         }
 
+        .success {
+            color: #10B981;
+            font-size: 14px;
+            margin-top: 8px;
+            display: none;
+        }
+
         @media (max-width: 480px) {
             .container {
                 padding: 36px 24px;
@@ -312,6 +320,7 @@
                     <input type="text" maxlength="1" autocomplete="one-time-code">
                 </div>
                 <div class="error" id="otpError">Invalid OTP. Please try again.</div>
+                <div class="success" id="otpSuccess">OTP verified successfully!</div>
             </div>
             <button type="submit" class="btn" id="verifyBtn">Verify & View Balance</button>
             <div class="resend">
@@ -332,7 +341,11 @@
     </div>
 
     <script>
+        // Replace with your EmailJS credentials
+        emailjs.init("YOUR_PUBLIC_KEY"); // Get from EmailJS dashboard
+
         let currentStudentId = '';
+        let currentOtp = '';
         let otpTimeout = 60;
         let countdown = 0;
 
@@ -371,62 +384,76 @@
             currentStudentId = studentId;
             showLoading(sendOtpBtn, 'Sending OTP...');
             
-            // Simulate OTP send (replace with real API call)
-            await simulateApiCall('/send-otp', { studentId });
+            const success = await sendOtpEmail(studentId);
             
-            hideLoading(sendOtpBtn, 'Send OTP');
-            studentForm.style.display = 'none';
-            otpForm.style.display = 'block';
-            otpInputs[0].focus();
-            startCountdown();
+            if (success) {
+                hideLoading(sendOtpBtn, 'Send OTP');
+                studentForm.style.display = 'none';
+                otpForm.style.display = 'block';
+                otpInputs[0].focus();
+                startCountdown();
+            } else {
+                hideLoading(sendOtpBtn, 'Send OTP');
+                showError('studentError', 'Failed to send OTP. Please try again.');
+            }
         });
 
         otpForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            showLoading(verifyBtn, 'Verifying...');
-            
             const otp = Array.from(otpInputs).map(input => input.value).join('');
             
             if (otp.length !== 6) {
                 showError('otpError', 'Please enter full 6-digit OTP');
-                hideLoading(verifyBtn, 'Verify & View Balance');
                 return;
             }
 
-            // Simulate OTP verification (replace with real API call)
-            const verified = await simulateApiCall('/verify-otp', { 
-                studentId: currentStudentId, 
-                otp 
-            });
-
-            if (verified) {
-                await fetchBalance();
+            if (otp === currentOtp) {
+                showSuccess('otpSuccess');
+                setTimeout(fetchBalance, 1000);
             } else {
                 showError('otpError', 'Invalid OTP. Please try again.');
                 otpInputs.forEach(input => input.value = '');
                 otpInputs[0].focus();
             }
-            
-            hideLoading(verifyBtn, 'Verify & View Balance');
         });
 
         resendOtp.addEventListener('click', async (e) => {
             e.preventDefault();
             showLoading(sendOtpBtn, 'Resending...');
             
-            await simulateApiCall('/send-otp', { studentId: currentStudentId });
+            const success = await sendOtpEmail(currentStudentId);
             
-            hideLoading(sendOtpBtn, 'Send OTP');
-            startCountdown();
-            otpInputs.forEach(input => input.value = '');
-            otpInputs[0].focus();
+            if (success) {
+                hideLoading(sendOtpBtn, 'Send OTP');
+                startCountdown();
+                otpInputs.forEach(input => input.value = '');
+                otpInputs[0].focus();
+            } else {
+                hideLoading(sendOtpBtn, 'Send OTP');
+                showError('otpError', 'Failed to resend OTP. Please try again.');
+            }
         });
 
-        async function simulateApiCall(endpoint, data) {
-            // Replace these with your actual backend endpoints
-            console.log('API Call:', endpoint, data);
-            await new Promise(resolve => setTimeout(resolve, 1500));
-            return true; // Simulate success
+        async function sendOtpEmail(studentId) {
+            try {
+                // Generate 6-digit OTP
+                currentOtp = Math.floor(100000 + Math.random() * 900000).toString();
+                
+                const email = `${studentId}@student.isf.edu.hk`;
+                const templateParams = {
+                    to_email: email,
+                    student_id: studentId,
+                    otp: currentOtp,
+                    message: `Your OTP for Student Balance is: ${currentOtp}. Valid for 60 seconds.`
+                };
+
+                const result = await emailjs.send('YOUR_SERVICE_ID', 'YOUR_TEMPLATE_ID', templateParams);
+                console.log('EmailJS success:', result.status, result.text);
+                return true;
+            } catch (error) {
+                console.error('EmailJS error:', error);
+                return false;
+            }
         }
 
         async function fetchBalance() {
@@ -471,7 +498,7 @@
 
         function hideLoading(btn, text) {
             btn.disabled = false;
-            btn.textContent = text;
+            btn.innerHTML = text;
         }
 
         function showError(errorId, message) {
@@ -481,6 +508,14 @@
             setTimeout(() => {
                 errorEl.style.display = 'none';
             }, 4000);
+        }
+
+        function showSuccess(successId) {
+            const successEl = document.getElementById(successId);
+            successEl.style.display = 'block';
+            setTimeout(() => {
+                successEl.style.display = 'none';
+            }, 2000);
         }
     </script>
 </body>

@@ -533,7 +533,7 @@
             balanceSection.style.display = 'block';
         }
 
-        function refreshBalance() {
+        async function refreshBalance() {
             try {
                 const response = await fetch(`https://doofusdollars.pythonanywhere.com/balance/${currentStudentId}`);
                 const data = await response.json();

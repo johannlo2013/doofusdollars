@@ -383,7 +383,7 @@
                 Available Doofus Credits
             </p>
             <div class="balance-buttons">
-                <button class="btn" onclick="location.reload()">Refresh</button>
+                <button class="btn" onclick="refreshBalance()">Refresh</button>
                 <button class="btn btn-secondary" onclick="convertTickets()">Update Balance</button>
             </div>
         </div>
@@ -533,6 +533,18 @@
             balanceSection.style.display = 'block';
         }
 
+        function refreshBalance() {
+            try {
+                const response = await fetch(`https://doofusdollars.pythonanywhere.com/balance/${currentStudentId}`);
+                const data = await response.json();
+                document.getElementById('balanceAmount').textContent = `$${parseFloat(data.balance || 0).toFixed(2)}`;
+            } catch (error) {
+                document.getElementById('balanceAmount').textContent = '$0.00';
+                console.error('Balance fetch error:', error);
+            }
+            
+        }
+        
         function convertTickets() {
             alert(
                 "To update your balance:\n\n" +

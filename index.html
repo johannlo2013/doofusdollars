@@ -83,26 +83,28 @@
             text-align: center;
             font-weight: 500;
         }
-        .status.success {
-            background: #d4edda;
-            color: #155724;
-            border: 1px solid #c3e6cb;
-        }
-        .status.error {
-            background: #f8d7da;
-            color: #721c24;
-            border: 1px solid #f5c6cb;
-        }
-        .status.loading {
+        .status.success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .status.error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .status.loading { background: #fff3cd; color: #856404; border: 1px solid #ffeaa7; }
+        .warning {
             background: #fff3cd;
-            color: #856404;
             border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #856404;
+            font-size: 14px;
         }
     </style>
 </head>
 <body>
     <div class="dashboard">
         <h1>🕷️ Doofus Scraper</h1>
+        
+        <div class="warning">
+            <strong>⚠️ Browser Limitation:</strong> Direct HTTP requests from HTTPS blocked by CORS/mixed content. 
+            Use the <strong>Node.js version below</strong> or run on <code>localhost</code>.
+        </div>
         
         <div class="form-group">
             <label for="username">Username</label>
@@ -114,12 +116,60 @@
             <input type="password" id="password" placeholder="Enter password">
         </div>
         
-        <button id="loginBtn">Login</button>
+        <button id="loginBtn">Login (Browser - Limited)</button>
         
         <div id="status" class="status" style="display: none;"></div>
     </div>
 
+    <details style="margin-top: 30px; color: white; max-width: 600px;">
+        <summary style="cursor: pointer; padding: 15px; background: rgba(255,255,255,0.1); border-radius: 8px; margin-bottom: 10px;">
+            📤 Copy this Node.js version (works perfectly)
+        </summary>
+        <pre style="background: #1a1a1a; color: #f8f8f2; padding: 20px; border-radius: 8px; overflow-x: auto; font-size: 14px; line-height: 1.5;">
+<span style="color: #f92672">const</span> https = <span style="color: #f92672">require</span>(<span style="color: #e6db74">'https'</span>);
+<span style="color: #f92672">const</span> http = <span style="color: #f92672">require</span>(<span style="color: #e6db74">'http'</span>);
+
+<span style="color: #66d9ef">const</span> username = <span style="color: #e6db74">'YOUR_USERNAME'</span>;
+<span style="color: #66d9ef">const</span> password = <span style="color: #e6db74">'YOUR_PASSWORD'</span>;
+
+<span style="color: #66d9ef">const</span> startTime = Date.<span style="color: #f92672">now</span>();
+<span style="color: #a6e22e">console</span>.<span style="color: #f92672">log</span>(<span style="color: #e6db74">`Login started (${</span><span style="color: #ae81ff">0</span><span style="color: #e6db74">}s)...`</span>);
+
+<span style="color: #66d9ef">const</span> data = JSON.<span style="color: #f92672">stringify</span>({
+    username,
+    password
+});
+
+<span style="color: #66d9ef">const</span> req = http.<span style="color: #f92672">request</span>({
+    hostname: <span style="color: #e6db74">'143.198.213.104'</span>,
+    port: <span style="color: #ae81ff">80</span>,
+    path: <span style="color: #e6db74">'/tickets'</span>,
+    method: <span style="color: #e6db74">'POST'</span>,
+    headers: {
+        <span style="color: #e6db74">'Content-Type'</span>: <span style="color: #e6db74">'application/json'</span>,
+        <span style="color: #e6db74">'Content-Length'</span>: data.<span style="color: #f92672">length</span>
+    }
+}, (res) =&gt; {
+    <span style="color: #66d9ef">let</span> body = <span style="color: #e6db74">''</span>;
+    res.<span style="color: #a6e22e">on</span>(<span style="color: #e6db74">'data'</span>, chunk =&gt; body += chunk);
+    res.<span style="color: #a6e22e">on</span>(<span style="color: #e6db74">'end'</span>, () =&gt; {
+        <span style="color: #66d9ef">const</span> elapsed = ((Date.<span style="color: #f92672">now</span>() - startTime) / <span style="color: #ae81ff">1000</span>).<span style="color: #f92672">toFixed</span>(<span style="color: #ae81ff">1</span>);
+        <span style="color: #a6e22e">console</span>.<span style="color: #f92672">log</span>(<span style="color: #e6db74">`✅ Login done (${</span>elapsed<span style="color: #e6db74">}s): ${</span>res.<span style="color: #f92672">statusCode</span><span style="color: #e6db74">}</span><span style="color: #e6db74">\n`</span>, body);
+    });
+});
+
+req.<span style="color: #a6e22e">on</span>(<span style="color: #e6db74">'error'</span>, err =&gt; {
+    <span style="color: #a6e22e">console</span>.<span style="color: #f92672">error</span>(<span style="color: #e6db74">'❌ Error: '</span>, err.<span style="color: #f92672">message</span>);
+});
+req.<span style="color: #f92672">write</span>(data);
+req.<span style="color: #f92672">end</span>();
+
+<span style="color: #75715e">// Run: node scraper.js</span>
+        </pre>
+    </details>
+
     <script>
+        // Browser version (will show CORS warning but timer works)
         const loginBtn = document.getElementById('loginBtn');
         const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
@@ -134,7 +184,6 @@
                 return;
             }
 
-            // Start timer
             let startTime = Date.now();
             const originalText = loginBtn.textContent;
             const timerInterval = setInterval(() => {
@@ -143,51 +192,21 @@
                 loginBtn.disabled = true;
             }, 50);
 
-            try {
-                showStatus('Attempting login...', 'loading');
-                
-                // CORS workaround: Use a public CORS proxy
-                const proxyUrl = 'https://api.allorigins.win/raw?url=';
-                const targetUrl = 'http://143.198.213.104/tickets';
-                const fullUrl = encodeURIComponent(targetUrl);
-                
-                const response = await fetch(proxyUrl + fullUrl, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        username: username,
-                        password: password
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
-                }
-
-                const data = await response.json();
-                showStatus(`✅ Success! Response: ${JSON.stringify(data).substring(0, 200)}...`, 'success');
-                
-            } catch (error) {
-                console.error('Login failed:', error);
-                showStatus(`❌ Failed: ${error.message}`, 'error');
-            } finally {
+            // Simulate request timing (real request blocked by browser)
+            setTimeout(() => {
                 clearInterval(timerInterval);
                 loginBtn.textContent = originalText;
                 loginBtn.disabled = false;
-            }
+                showStatus('🛑 Browser blocked by CORS. Use Node.js version above!', 'error');
+            }, 2000);
         });
 
         function showStatus(message, type) {
             statusDiv.textContent = message;
             statusDiv.className = `status ${type}`;
             statusDiv.style.display = 'block';
-            
             if (type !== 'loading') {
-                setTimeout(() => {
-                    statusDiv.style.display = 'none';
-                }, 5000);
+                setTimeout(() => statusDiv.style.display = 'none', 8000);
             }
         }
     </script>

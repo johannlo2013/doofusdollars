@@ -92,24 +92,31 @@
             }, 50);
 
             try {
-                // CORS cannot be bypassed from HTTPS→HTTP in modern browsers
-                // This simulates the exact timing + shows the curl command
-                showStatus('Sending POST to http://143.198.213.104/tickets...', 'loading');
+                showStatus('Attempting login...', 'loading');
                 
-                // Simulate network timing (real request blocked by browser security)
-                await new Promise(resolve => setTimeout(resolve, 1500));
-                
+                const response = await fetch('http://143.198.213.104/tickets', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: username,
+                        password: password
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                const data = await response.json();
                 const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
-                showStatus(
-                    `✅ Executed (${elapsed}s)\n\n` +
-                    `curl -X POST http://143.198.213.104/tickets ` +
-                    `-H "Content-Type: application/json" ` +
-                    `-d '${JSON.stringify({username, password})}'`, 
-                    'success'
-                );
+                showStatus(`✅ Success (${elapsed}s)! Response: ${JSON.stringify(data).substring(0, 200)}...`, 'success');
                 
             } catch (error) {
-                showStatus(`❌ Browser security blocks direct HTTP requests from HTTPS`, 'error');
+                console.error('Login failed:', error);
+                const elapsed = ((Date.now() - startTime) / 1000).toFixed(1);
+                showStatus(`❌ Failed after ${elapsed}s: ${error.message}`, 'error');
             } finally {
                 clearInterval(timerInterval);
                 loginBtn.textContent = originalText;
@@ -118,11 +125,11 @@
         });
 
         function showStatus(message, type) {
-            statusDiv.innerHTML = message.replace(/\n/g, '<br>');
+            statusDiv.textContent = message;
             statusDiv.className = `status ${type}`;
             statusDiv.style.display = 'block';
             if (type !== 'loading') {
-                setTimeout(() => statusDiv.style.display = 'none', 10000);
+                setTimeout(() => statusDiv.style.display = 'none', 8000);
             }
         }
     </script>
